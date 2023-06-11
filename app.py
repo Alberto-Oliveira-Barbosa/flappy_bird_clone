@@ -36,7 +36,7 @@ class Passaro:
         self.altura = self.y
         self.tempo = 0
         self.contagem_imagem = 0
-        self,imagem = self.IMAGENS_PASSARO[0]
+        self.imagem = self.IMAGENS_PASSARO[0]
 
     def pular(self):
         self.salto = -10.5
@@ -63,8 +63,37 @@ class Passaro:
                 if self.angulo > -90:
                     self.angulo -= self.VELOCIDADE_ROTACAO
 
-    def desenhar(self):
-        pass
+    def desenhar(self,tela):
+        self.contagem_imagem += 1
+
+        # seleciona as imagens para a batida de asas
+        if self.contagem_imagem < self.TEMPO_ANIMACAO:
+            self.imagem = self.IMAGENS_PASSARO[0]
+        elif self.contagem_imagem < self.IMAGENS_PASSARO * 2:
+            self.imagem = self.IMAGENS_PASSARO[1]
+        elif self.contagem_imagem < self.IMAGENS_PASSARO * 3:
+            self.imagem = self.IMAGENS_PASSARO[2]
+        elif self.contagem_imagem < self.IMAGENS_PASSARO * 3:
+            self.imagem = self.IMAGENS_PASSARO[1]
+        # elif self.contagem_imagem < self.IMAGENS_PASSARO + 1:
+        else:
+            self.imagem = self.IMAGENS_PASSARO[0]
+        
+        # ajusta a imagem da queda do pássaro
+        if self.angulo <= -80:
+            self.imagem = self.IMAGENS_PASSARO[1]
+            self.contagem_imagem = self.TEMPO_ANIMACAO * 2
+
+        # desenha a rotação dos passaro dentro da caixa de colisão
+        imagem_rotacionada = pygame.transform.rotate(self.imagem, self.angulo)
+        centro_imagem = self.imagem.get_rect(topleft=(self.x, self.y)).center
+        caixa_colisao = imagem_rotacionada.get_rect(center=centro_imagem)
+        tela.blit(imagem_rotacionada, caixa_colisao.topleft)
+
+    def get_mask(self):
+        # cria uma mascara de colisão para o formato da imagem
+        pygame.mask.from_surface(self.imagem)
+
 
 
 class Cano:
