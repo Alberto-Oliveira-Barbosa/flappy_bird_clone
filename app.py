@@ -5,19 +5,19 @@ import random
 # configuração da tela
 TELA_LARGURA = 500
 TELA_ALTURA = 800
+VELOCIDADE_GERAL = 5
 pygame.font.init()
 FONTE_PLACAR = pygame.font.SysFont('arial', 50)
 
 # personagem e cenário
-IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','base.png')))
-IMAGEM_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','bg.png')))
+SPRITE_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','bg.png')))
 
 
 
 
 class Passaro:
     
-    IMAGENS_PASSARO = [
+    SPRITES_PASSARO = [
         pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','bird1.png'))),
         pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','bird2.png'))),
         pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','bird3.png'))),
@@ -35,7 +35,7 @@ class Passaro:
         self.altura = self.y
         self.tempo = 0
         self.contagem_imagem = 0
-        self.imagem = self.IMAGENS_PASSARO[0]
+        self.imagem = self.SPRITES_PASSARO[0]
 
     def pular(self):
         self.salto = -10.5
@@ -67,20 +67,20 @@ class Passaro:
 
         # seleciona as imagens para a batida de asas
         if self.contagem_imagem < self.TEMPO_ANIMACAO:
-            self.imagem = self.IMAGENS_PASSARO[0]
-        elif self.contagem_imagem < self.IMAGENS_PASSARO * 2:
-            self.imagem = self.IMAGENS_PASSARO[1]
-        elif self.contagem_imagem < self.IMAGENS_PASSARO * 3:
-            self.imagem = self.IMAGENS_PASSARO[2]
-        elif self.contagem_imagem < self.IMAGENS_PASSARO * 3:
-            self.imagem = self.IMAGENS_PASSARO[1]
-        # elif self.contagem_imagem < self.IMAGENS_PASSARO + 1:
+            self.imagem = self.SPRITES_PASSARO[0]
+        elif self.contagem_imagem < self.SPRITES_PASSARO * 2:
+            self.imagem = self.SPRITES_PASSARO[1]
+        elif self.contagem_imagem < self.SPRITES_PASSARO * 3:
+            self.imagem = self.SPRITES_PASSARO[2]
+        elif self.contagem_imagem < self.SPRITES_PASSARO * 3:
+            self.imagem = self.SPRITES_PASSARO[1]
+        # elif self.contagem_imagem < self.SPRITES_PASSARO + 1:
         else:
-            self.imagem = self.IMAGENS_PASSARO[0]
+            self.imagem = self.SPRITES_PASSARO[0]
         
         # ajusta a imagem da queda do pássaro
         if self.angulo <= -80:
-            self.imagem = self.IMAGENS_PASSARO[1]
+            self.imagem = self.SPRITES_PASSARO[1]
             self.contagem_imagem = self.TEMPO_ANIMACAO * 2
 
         # desenha a rotação dos passaro dentro da caixa de colisão
@@ -97,8 +97,8 @@ class Passaro:
 
 class Cano:
     DISTANCIA_ENTRE_CANOS = 200
-    VELOCIDADE = 5
-    IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','pipe.png')))
+    VELOCIDADE = VELOCIDADE_GERAL
+    SPRITE_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','pipe.png')))
 
 
     def __init__(self,x) -> None:
@@ -106,8 +106,8 @@ class Cano:
         self.altura = 0
         self.posicao_topo = 0
         self.posicao_base = 0
-        self.CANO_TOPO = pygame.transform.flip(self.IMAGEM_CANO, False, True)
-        self.CANO_BASE = self.IMAGEM_CANO
+        self.CANO_TOPO = pygame.transform.flip(self.SPRITE_CANO, False, True)
+        self.CANO_BASE = self.SPRITE_CANO
         self.passou = False
         self.definir_altura()
 
@@ -144,7 +144,30 @@ class Cano:
             return False
 
 
-class Chao:
-    pass
+class Piso:
+    SPRITE_PISO = pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'images','base.png')))
+    VELOCIDADE = VELOCIDADE_GERAL
+    LARGURA = SPRITE_PISO.get_width()
+    IMAGEM = SPRITE_PISO
+
+    def __init__(self, y) -> None:
+        self.y = y
+        self.piso_inicial_x = 0
+        self.piso_posterior_x = self.LARGURA
+
+    def mover(self):
+        self.piso_inicial_x -= self.VELOCIDADE
+        self.piso_posterior_x -= self.VELOCIDADE
+
+        if self.piso_inicial_x + self.LARGURA < 0:
+            self.piso_inicial_x += self.LARGURA
+
+        if self.piso_posterior_x + self.LARGURA < 0:
+            self.piso_posterior_x += self.LARGURA
+
+    
+    def desenhar(self, tela):
+        tela.blit(self.IMAGEM, (self.piso_inicial_x, self.y))
+        tela.blit(self.IMAGEM, (self.piso_posterior_x, self.y))
 
 
