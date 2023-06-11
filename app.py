@@ -1,6 +1,6 @@
 import pygame
 import os 
-from src.config import TELA_ALTURA, TELA_LARGURA, FPS
+from src.config import TELA_ALTURA, TELA_LARGURA, FPS, POSICAO_PASSARO_INICIO, POSICAO_CANO_INICIO, POSICAO_CANO_POSTERIOR, POSICAO_PISO_INICIO
 from src.Passaro import Passaro
 from src.Cano import Cano
 from src.Piso import Piso
@@ -26,18 +26,12 @@ def desenhar_tela(tela, passaro, canos, piso, pontos, vidas):
 
 def run_game():
     ativo = True
-    adicionar_cano = False
-    remover_canos = []
-    posicao_piso_inicial = 730
-    posicao_cano_inicial = 700
-    posicao_canos_posteriores = 600
-    posicao_passaro_inicial = (230,350)
     vidas = 3
 
     pontos = 0
-    passaro = Passaro(*posicao_passaro_inicial)
-    piso = Piso(posicao_piso_inicial)
-    canos = [Cano(posicao_cano_inicial)]
+    passaro = Passaro(*POSICAO_PASSARO_INICIO)
+    piso = Piso(POSICAO_PISO_INICIO)
+    canos = [Cano(POSICAO_CANO_INICIO)]
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     timer = pygame.time.Clock()
 
@@ -56,6 +50,8 @@ def run_game():
         passaro.mover()
         piso.mover()
 
+        adicionar_cano = False
+        remover_canos = []
         for cano in canos:
             if cano.colidir(passaro):
                 # passaros.pop()
@@ -73,7 +69,7 @@ def run_game():
 
         if adicionar_cano:
             pontos += 1
-            canos.append(Cano(posicao_canos_posteriores))
+            canos.append(Cano(POSICAO_CANO_POSTERIOR))
 
         for cano in remover_canos:
             canos.remove(cano)

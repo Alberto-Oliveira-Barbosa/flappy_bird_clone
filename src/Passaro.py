@@ -42,8 +42,8 @@ class Passaro:
         self.y += deslocamento
 
         # angulo do passaro
-        if deslocamento <0 or self.y <(self.altura+ 50):
-            if self.angulo< self.ROTACAO_MAXIMA:
+        if deslocamento < 0 or self.y < (self.altura + 50):
+            if self.angulo < self.ROTACAO_MAXIMA:
                 self.angulo = self.ROTACAO_MAXIMA
             else:
                 if self.angulo > -90:
@@ -59,11 +59,12 @@ class Passaro:
             self.imagem = self.SPRITES_PASSARO[1]
         elif self.contagem_imagem < self.TEMPO_ANIMACAO * 3:
             self.imagem = self.SPRITES_PASSARO[2]
-        elif self.contagem_imagem < self.TEMPO_ANIMACAO * 3:
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO * 4:
             self.imagem = self.SPRITES_PASSARO[1]
-        # elif self.contagem_imagem < self.SPRITES_PASSARO + 1:
+        # elif self.contagem_imagem >= self.SPRITES_PASSARO * 4 + 1:
         else:
             self.imagem = self.SPRITES_PASSARO[0]
+            self.contagem_imagem = 0
         
         # ajusta a imagem da queda do pássaro
         if self.angulo <= -80:
